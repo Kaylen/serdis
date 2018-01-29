@@ -1,0 +1,29 @@
+{
+  "name": "serdis",
+  "version": "0.0.9",
+  "description": "Server discovery tool",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "multicast",
+    "server",
+    "discovery"
+  ],
+  "author": "liezun.js@gmail.com",
+  "license": "GPL-2.0",
+  "dependencies": {
+    "crypto": "^1.0.1",
+    "dgram": "^1.0.1"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kaylen/serdis.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Kaylen/serdis/issues"
+  },
+  "homepage": "https://github.com/Kaylen/serdis#readme"
+}

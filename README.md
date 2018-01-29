@@ -1,0 +1,2 @@
+# serdis
+Server discovery tool
