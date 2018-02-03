@@ -39,4 +39,6 @@ module.exports.createServer = (key, logger) => {
   server.bind(44444, () => {
     server.addMembership('239.255.0.1')
   })
+
+  return server
 }

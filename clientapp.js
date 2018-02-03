@@ -13,7 +13,6 @@ module.exports.getServerAddress = (key, logger) => {
                 + Math.random().toString()
                 + Math.random().toString()
                 + Math.random().toString()
-  const decipher = crypto.createDecipher('aes-256-cbc', random)
   const message = Buffer.concat([cipher.update(new Buffer(random, 'utf8')), cipher.final()])
 
   let timeoutId
@@ -28,6 +27,7 @@ module.exports.getServerAddress = (key, logger) => {
   })
 
   client.on('message', (msg, rinfo) => {
+    let decipher = crypto.createDecipher('aes-256-cbc', random)
     try {
       let decrypted = decipher.update(msg, 'ascii', 'utf8')
       decrypted += decipher.final('utf8')
@@ -38,13 +38,14 @@ module.exports.getServerAddress = (key, logger) => {
       } else {
         logger(`KeyError: ${decrypted} from ${rinfo.address}:${rinfo.port}`)
         result.emit('error', 'KeyError')
+        client.close()
       }
     } catch (e) {
       logger(e)
       result.emit('error', 'KeyError')
+      client.close()
     } finally {
       clearTimeout(timeoutId)
-      client.close()
     }
   })
 
