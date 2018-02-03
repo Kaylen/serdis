@@ -16,6 +16,7 @@ module.exports.getServerAddress = (key, logger) => {
   const message = Buffer.concat([cipher.update(new Buffer(random, 'utf8')), cipher.final()])
 
   let timeoutId
+  let found = false
   const result = new MyEmitter()
 
   if (!logger) logger = console.log
@@ -34,18 +35,19 @@ module.exports.getServerAddress = (key, logger) => {
 
       logger(`client got: ${decrypted} from ${rinfo.address}:${rinfo.port}`)
       if (`${decrypted}` === key) {
+        found = true
         result.emit('address', rinfo.address)
       } else {
         logger(`KeyError: ${decrypted} from ${rinfo.address}:${rinfo.port}`)
         result.emit('error', 'KeyError')
+        clearTimeout(timeoutId)
         client.close()
       }
     } catch (e) {
       logger(e)
       result.emit('error', 'KeyError')
-      client.close()
-    } finally {
       clearTimeout(timeoutId)
+      client.close()
     }
   })
 
@@ -57,8 +59,10 @@ module.exports.getServerAddress = (key, logger) => {
   client.bind(55555, () => {
     client.send(message, 44444, '239.255.0.1')
     timeoutId = setTimeout(() => {
-      logger(`NotFound`)
-      result.emit('error', 'NotFound')
+      if (!found) {
+        logger(`NotFound`)
+        result.emit('error', 'NotFound')
+      }
       client.close()
     }, 1000)
   })
